@@ -1,39 +1,39 @@
 #include <stm32f10x.h>
-//#include <nvic.h>
+#include <contiki.h>
 #include <sys/clock.h>
 #include <sys/cc.h>
 #include <sys/etimer.h>
-//#include <debug-uart.h>
 
 static volatile clock_time_t current_clock = 0;
 static volatile unsigned long current_seconds = 0;
 static unsigned int second_countdown = CLOCK_SECOND;
 
-void
-SysTick_handler(void) __attribute__ ((interrupt));
+static uint32_t count =0;
 
-void
-SysTick_handler(void)
+void clockHandle(void)
 {
-  (void)SysTick->CTRL;
-  SCB->ICSR = SCB_ICSR_PENDSTCLR;
   current_clock++;
   if(etimer_pending() && etimer_next_expiration_time() <= current_clock) {
     etimer_request_poll();
-    /* printf("%d,%d\n", clock_time(),etimer_next_expiration_time  	()); */
 
   }
   if (--second_countdown == 0) {
     current_seconds++;
     second_countdown = CLOCK_SECOND;
   }
+
 }
 
+void SysTick_Handler(void)
+{
+    clockHandle();
+}
 
 void
 clock_init()
 {
-    SysTick_Config(720000);
+    SysTick_Config(720000); //10ms
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
 }
 
 clock_time_t

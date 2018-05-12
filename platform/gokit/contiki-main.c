@@ -4,6 +4,7 @@
 //#include <nvic.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <contiki.h>
 //#include <debug-uart.h>
 #include <sys/process.h>
 #include <sys/procinit.h>
@@ -18,10 +19,12 @@ int
 main()
 {
   SystemInit();
+
   uartxInit();
   printf("Initialising\n");
 
   clock_init();
+
   process_init();
   process_start(&etimer_process, NULL);
   autostart_start(autostart_processes);

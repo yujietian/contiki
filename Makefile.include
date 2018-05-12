@@ -66,6 +66,10 @@ MODULES += core/sys core/dev core/lib
 # Include IPv6, IPv4, and/or Rime
 
 HAS_STACK = 0
+CONTIKI_WITH_RIME = 0
+CONTIKI_WITH_IPV4 = 0
+CONTIKI_WITH_IPV6 = 0
+
 ifeq ($(CONTIKI_WITH_IPV4),1)
   HAS_STACK = 1
   CFLAGS += -DNETSTACK_CONF_WITH_IPV4=1
@@ -166,7 +170,7 @@ else
   TRACE_LD = @echo "  LD       " $@
   TRACE_AR = @echo "  AR       " $@
   TRACE_AS = @echo "  AS       " $<
-  Q=@
+  Q=
 endif
 
 ### Forward comma-separated list of arbitrary defines to the compiler

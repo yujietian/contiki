@@ -44,10 +44,12 @@ void _exit(int status) {
     }
 }
 
+/*
 void _init()
 {
 
 }
+*/
 
 int _close(int file) {
     return -1;

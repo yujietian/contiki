@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = hello-world
+CONTIKI_PROJECT = hello-world.bin sensors-demo.bin
 all: $(CONTIKI_PROJECT)
 
 CONTIKI = ../..
