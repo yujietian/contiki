@@ -46,6 +46,9 @@
 #include "sys/rtimer.h"
 #include "stm32f10x.h"
 
+#include "sensors.h"
+#include "dev/leds-arch.h"
+
 #define DEBUG 0
 #if DEBUG
 #include <stdio.h>
@@ -54,25 +57,34 @@
 #define PRINTF(...)
 #endif
 
+static uint16_t count = 0;
+static uint16_t targetCount = 0;
 /*---------------------------------------------------------------------------*/
 void
 TIM3_IRQHandler(void)
 {
-    if(TIM_GetITStatus(TIM3, TIM_IT_CC1) == SET)
+    if(TIM_GetITStatus(TIM3, TIM_IT_Update) == SET)
     {
-        TIM_ClearITPendingBit(TIM3,TIM_IT_CC1);
+        TIM_ClearITPendingBit(TIM3,TIM_IT_Update);
 
-        rtimer_arch_disable_irq();
+        count++;
 
-        rtimer_run_next();
+        if(count == targetCount)
+        {
+            targetCount = 0;
+            count = 0;
+            rtimer_arch_disable_irq();
+
+            rtimer_run_next();
+        }
     }
 }
 /*---------------------------------------------------------------------------*/
 void
 rtimer_arch_init(void)
 {
-    uint16_t arr = 65535;
-    uint16_t psc = (uint16_t)(SystemCoreClock/RTIMER_ARCH_SECOND) - 1;
+    uint16_t arr = 719;//65535;
+    uint16_t psc = 9;//(uint16_t)(SystemCoreClock/RTIMER_ARCH_SECOND) - 1;
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
 
@@ -99,42 +111,49 @@ rtimer_arch_init(void)
 void
 rtimer_arch_disable_irq(void)
 {
-    TIM_ITConfig(TIM3,TIM_IT_CC1, DISABLE);
+    TIM_ITConfig(TIM3,TIM_IT_Update, DISABLE);
 }
 /*---------------------------------------------------------------------------*/
 void
 rtimer_arch_enable_irq(void)
 {
-    TIM_ClearFlag(TIM3, TIM_IT_CC1);
+    TIM_ClearFlag(TIM3, TIM_IT_Update);
 
-    TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
+    TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
 }
 /*---------------------------------------------------------------------------*/
 rtimer_clock_t
 rtimer_arch_now(void)
 {
-  rtimer_clock_t t1, t2;
+  /*
+  rtimer_clock_t t1 = 0;
+  rtimer_clock_t t2 = 0;
 
   do
   {
       t1 = TIM_GetCounter(TIM3);
       t2 = TIM_GetCounter(TIM3);
   }while(t1 != t2);
+  */
 
-  return t1;
+  return 0;
 }
 
 /*---------------------------------------------------------------------------*/
 void
 rtimer_arch_schedule(rtimer_clock_t t)
 {
+    /*
     TIM_SetCompare1(TIM3, t);
 
     PRINTF("rtimer_arch_schedule, %d !\n", rtimer_arch_now());
 
-    TIM_ClearFlag(TIM3, TIM_IT_CC1);
+    rtimer_arch_enable_irq();
+    */
 
-    TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
+    count = 0;
+    targetCount = t;
+    rtimer_arch_enable_irq();
 }
 /*---------------------------------------------------------------------------*/
 /** @} */
