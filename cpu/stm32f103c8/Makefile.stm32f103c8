@@ -14,7 +14,7 @@ INC_FLAGS= -I $(CONTIKI_CPU)/Libraries/STM32F10x_StdPeriph_Driver/inc \
 		   -I $(CONTIKI_CPU)/Libraries/CMSIS/CM3/CoreSupport \
 		   -I $(CONTIKI_CPU)/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
 
-STM32F103C8_SOURCEFILES = stm32f10x_it.c newlib.c hal_uart.c rtimer-arch.c clock.c \
+STM32F103C8_SOURCEFILES = stm32f10x_it.c syscalls.c hal_uart.c rtimer-arch.c clock.c \
 							core_cm3.c \
 		   					system_stm32f10x.c \
 							misc.c \
@@ -73,8 +73,8 @@ ifndef DEBUG
 OPTI = -Os -ffunction-sections 
 endif
 
-CFLAGSNO = -W -Wall -g -mcpu=cortex-m3 -mthumb -D__MICROLIB -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTDOUT_USART=1 -std=c99 -mlittle-endian -mfloat-abi=soft $(INC_FLAGS)
-#-mthumb-interwork -Wl,--gc-sections
+CFLAGSNO = -W -Wall -g -mcpu=cortex-m3 -mthumb -D__MICROLIB -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -std=gnu99 -mlittle-endian -mfloat-abi=soft $(INC_FLAGS)
+#-mthumb-interwork -Wl,--gc-sections -DSTDOUT_USART=1
 CFLAGS  += $(CFLAGSNO) $(OPTI)
 ASFLAGS = -W -Wall -g -mcpu=cortex-m3 -mthumb -c -Os -ffunction-sections -mlittle-endian
 

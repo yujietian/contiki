@@ -23,7 +23,7 @@ void rtimerCB(struct rtimer *t, void *ptr)
 
     led2.configure(SENSORS_ACTIVE, count%2);
 
-    PRINTF("************** %d\n", RTIMER_NOW());
+    //PRINTF("***rtimer*********** %d\n", RTIMER_NOW());
     rtimer_set(&timerRtimer, RTIMER_NOW()+rtimerTime, 0, rtimerCB, NULL);
     count++;
 }
@@ -43,9 +43,7 @@ PROCESS_THREAD(sensors_test_process, ev, data)
   led1.configure(SENSORS_HW_INIT, 0);
   led2.configure(SENSORS_HW_INIT, 0);
 
-  PRINTF("========================\n");
   PRINTF("Starting Sensor Example.\n");
-  PRINTF("========================\n");
 
   /* Set an etimer. We take sensor readings when it expires and reset it. */
   etimer_set(&et, CLOCK_SECOND);
@@ -56,10 +54,10 @@ PROCESS_THREAD(sensors_test_process, ev, data)
   {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
 
-    PRINTF("------------------\n");
     led1.configure(SENSORS_ACTIVE, count%2);
-
     count++;
+
+    //PRINTF("***etimer*********** %d\n", RTIMER_NOW());
     etimer_reset(&et);
   }
   PROCESS_END();

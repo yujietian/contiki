@@ -203,6 +203,7 @@ void uartxInit(void)
 * @param none
 * @return none
 */
+/*
 PUTCHAR_PROTOTYPE
 {
     //Place your implementation of fputc here , e.g. write a character to the USART
@@ -211,3 +212,4 @@ PUTCHAR_PROTOTYPE
     while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
     return ch;
 }
+*/
